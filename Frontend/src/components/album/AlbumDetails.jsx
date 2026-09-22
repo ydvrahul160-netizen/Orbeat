@@ -91,9 +91,7 @@ export default function AlbumDetails({ album, onBack, onPlay, currentTrack }) {
                 <div
                   key={track._id}
                   className={`group grid grid-cols-[42px_1fr_64px] items-center px-4 py-3 transition sm:grid-cols-[52px_1fr_80px] sm:px-6 ${
-                    isCurrent
-                      ? "bg-violet-500/[0.08]"
-                      : "hover:bg-white/[0.04]"
+                    isCurrent ? "bg-violet-500/[0.08]" : "hover:bg-white/[0.04]"
                   }`}
                 >
                   {/* Number */}
@@ -110,13 +108,17 @@ export default function AlbumDetails({ album, onBack, onPlay, currentTrack }) {
                   {/* Track info */}
                   <div className="min-w-0 pr-4">
                     <div className="flex min-w-0 items-center gap-3">
-                      {track.coverImage && (
-                        <img
-                          src={track.coverImage}
-                          alt=""
-                          className="hidden h-10 w-10 shrink-0 rounded-lg object-cover sm:block"
-                        />
-                      )}
+                      <div className="hidden h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-violet-900 via-zinc-900 to-cyan-900 sm:flex">
+                        {track.coverImage ? (
+                          <img
+                            src={track.coverImage}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <FaCompactDisc className="text-lg text-violet-300/70" />
+                        )}
+                      </div>
 
                       <div className="min-w-0">
                         <h3
@@ -142,9 +144,7 @@ export default function AlbumDetails({ album, onBack, onPlay, currentTrack }) {
                   <button
                     onClick={() => onPlay(track)}
                     aria-label={
-                      isCurrent
-                        ? `Play ${track.title}`
-                        : `Play ${track.title}`
+                      isCurrent ? `Play ${track.title}` : `Play ${track.title}`
                     }
                     className={`ml-auto flex h-10 w-10 items-center justify-center rounded-full transition ${
                       isCurrent
