@@ -25,9 +25,18 @@ export default function MusicCard({
       }`}
     >
       <div className="relative mb-4 aspect-square overflow-hidden rounded-md bg-gradient-to-br from-green-500 via-emerald-700 to-zinc-950 shadow-xl">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <IoMusicalNotes className="text-7xl text-black/45" />
-        </div>
+        {music.coverImage ? (
+          <img
+            src={music.coverImage}
+            alt={`${music.title} cover`}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <IoMusicalNotes className="text-7xl text-black/45" />
+          </div>
+        )}
 
         <button
           className="absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-500 text-black shadow-xl transition hover:scale-105 group-hover:translate-y-0 group-hover:opacity-100 sm:translate-y-2 sm:opacity-0"
@@ -39,8 +48,12 @@ export default function MusicCard({
       </div>
 
       <div className="flex items-center gap-2">
-        {rank && <span className="text-sm font-bold text-green-400">#{rank}</span>}
-        <h3 className="truncate text-base font-bold text-white">{music.title}</h3>
+        {rank && (
+          <span className="text-sm font-bold text-green-400">#{rank}</span>
+        )}
+        <h3 className="truncate text-base font-bold text-white">
+          {music.title}
+        </h3>
       </div>
       <div className="mt-1 flex items-center gap-2 text-sm text-zinc-400">
         <Avatar artist={music.artist} size="h-6 w-6" />
@@ -57,12 +70,22 @@ export default function MusicCard({
         >
           <FaHeart /> Like
         </button>
-        <button type="button" className="flex items-center gap-2 rounded-full px-3 py-2" onClick={() => setCommentsOpen(true)}>
+        <button
+          type="button"
+          className="flex items-center gap-2 rounded-full px-3 py-2"
+          onClick={() => setCommentsOpen(true)}
+        >
           <FaCommentDots /> Comment
         </button>
       </div>
 
-      {commentsOpen && <CommentModal music={music} onComment={onComment} onClose={() => setCommentsOpen(false)} />}
+      {commentsOpen && (
+        <CommentModal
+          music={music}
+          onComment={onComment}
+          onClose={() => setCommentsOpen(false)}
+        />
+      )}
     </article>
   );
 }
