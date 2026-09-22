@@ -8,9 +8,11 @@ const multer = require('multer');
 
 const upload = multer({
     storage: multer.memoryStorage(),
-    limits: { fileSize: 20 * 1024 * 1024 },
+    limits: {
+        fileSize: 20 * 1024 * 1024,
+    },
     fileFilter: (_req, file, callback) => {
-        const allowedTypes = new Set([
+        const audioTypes = new Set([
             "audio/aac",
             "audio/flac",
             "audio/m4a",
@@ -21,13 +23,28 @@ const upload = multer({
             "audio/webm",
             "audio/x-m4a",
             "audio/x-wav",
-        ]);
+        ])
 
-        if (!allowedTypes.has(file.mimetype)) {
-            return callback(new Error("Only supported audio files are allowed."));
+        const imageTypes = new Set([
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+        ])
+
+        if (file.fieldname === "music" && audioTypes.has(file.mimetype)) {
+            return callback(null, true)
         }
 
-        return callback(null, true);
+        if (
+            file.fieldname === "coverImage" &&
+            imageTypes.has(file.mimetype)
+        ) {
+            return callback(null, true)
+        }
+
+        return callback(
+            new Error("Only supported audio and image files are allowed.")
+        )
     },
 })
 
@@ -46,7 +63,15 @@ const artworkUpload = multer({
 const router = express.Router();
 
 // 1: creating music api, further code/design is in 'routes' folder and in 'music.controller' file
-router.post("/upload", authMiddleware.authArtist, upload.single("music"), musicController.createMusic)
+router.post(
+    "/upload",
+    authMiddleware.authArtist,
+    upload.fields([
+        { name: "music", maxCount: 1 },
+        { name: "coverImage", maxCount: 1 },
+    ]),
+    musicController.createMusic
+)
 
 router.get("/mine", authMiddleware.authArtist, musicController.getArtistMusics)
 
