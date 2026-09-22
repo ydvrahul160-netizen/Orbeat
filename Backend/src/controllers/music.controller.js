@@ -8,25 +8,61 @@ const { uploadFile } = require("../services/storage.service");
 async function createMusic(req, res) {
   try {
     const { title } = req.body;
-    const file = req.file;
+
+    const musicFile = req.files?.music?.[0];
+    const coverFile = req.files?.coverImage?.[0];
 
     if (!title || title.trim() === "") {
-      return res.status(400).json({ message: "Title is required." });
+      return res.status(400).json({
+        message: "Title is required.",
+      });
     }
 
-    if (!file || !file.buffer) {
-      return res.status(400).json({ message: "Music file is required." });
+    if (!musicFile || !musicFile.buffer) {
+      return res.status(400).json({
+        message: "Music file is required.",
+      });
     }
 
-    const result = await uploadFile(file.buffer.toString("base64"));
-    if (!result?.url) {
-      return res.status(502).json({ message: "Music storage did not return a file URL." });
+    // Upload audio
+    const musicResult = await uploadFile(
+      musicFile.buffer.toString("base64")
+    );
+
+    if (!musicResult?.url) {
+      return res.status(502).json({
+        message: "Music storage did not return a file URL.",
+      });
+    }
+
+    // Upload cover image if provided
+    let coverImage;
+
+    if (coverFile) {
+      if (coverFile.size > 5 * 1024 * 1024) {
+        return res.status(413).json({
+          message: "Cover image must be 5 MB or smaller.",
+        });
+      }
+
+      const coverResult = await uploadFile(
+        coverFile.buffer.toString("base64")
+      );
+
+      if (!coverResult?.url) {
+        return res.status(502).json({
+          message: "Cover image storage did not return a file URL.",
+        });
+      }
+
+      coverImage = coverResult.url;
     }
 
     const music = await musicModel.create({
-      uri: result.url,
+      uri: musicResult.url,
       title: title.trim(),
       artist: req.user.id,
+      coverImage,
     });
 
     return res.status(201).json({
@@ -35,10 +71,12 @@ async function createMusic(req, res) {
     });
   } catch (error) {
     console.error("Music upload failed:", error);
-    return res.status(502).json({ message: "Music upload failed." });
+
+    return res.status(502).json({
+      message: "Music upload failed.",
+    });
   }
 }
-
 async function getArtistMusics(req, res) {
   const musics = await musicModel
     .find({ artist: req.user.id })
