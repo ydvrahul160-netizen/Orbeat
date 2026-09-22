@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body,
+#root{
+  width:100%;
+  min-height:100%;
+}
+
+body{
+  margin:0;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  background:#121212;
+  color:white;
+}
+
+#root{
+  height:100vh;
+}
+
+button{
+  cursor:pointer;
+}
+
+input,
+button{
+  font:inherit;
+}
+
+*{
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 #09090b;
+}
+
+
+/* reusuable css for login and register */
+/* start */
+@layer components {
+  .input-field {
+    @apply w-full rounded-md border border-zinc-700 bg-zinc-800 px-4 py-3 text-white outline-none transition focus:border-green-500;
+  }
+
+  .primary-btn {
+    @apply w-full rounded-full bg-green-500 py-3 font-semibold text-black transition duration-300 hover:scale-105 hover:bg-green-400;
+  }
+
+  .card {
+    @apply w-full max-w-md rounded-lg border border-zinc-800 bg-zinc-900 p-8 shadow-2xl;
+  }
+}
+/* end */
