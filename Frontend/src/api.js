@@ -154,3 +154,23 @@ export async function recordPlay(musicId) {
     method: 'POST',
   })
 }
+
+export async function createHistory(musicId, listenedDuration = 0) {
+  return fetchJson('/history', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      musicId,
+      listenedDuration,
+    }),
+  })
+}
+
+export async function searchMusic(query, limit = 10) {
+  const params = new URLSearchParams({
+    q: query,
+    limit: String(limit),
+  })
+
+  return fetchJson(`/music/search?${params.toString()}`)
+}
