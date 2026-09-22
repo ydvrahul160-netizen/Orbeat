@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaLayerGroup,
@@ -9,12 +9,12 @@ import {
   FaUpload,
   FaUserCircle,
   FaCompactDisc,
-} from 'react-icons/fa'
-import { IoMusicalNotes } from 'react-icons/io5'
-import { useApp } from '../contexts/AppContext'
+} from "react-icons/fa";
+import { IoMusicalNotes } from "react-icons/io5";
+import { useApp } from "../contexts/AppContext";
 
 export default function DashboardLayout({ children }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const {
     user,
     currentTrack,
@@ -25,39 +25,48 @@ export default function DashboardLayout({ children }) {
     handleTrackEnded,
     setIsPlaying,
     audioRef,
-  } = useApp()
-  const [playerState, setPlayerState] = useState('idle')
-  const [playerError, setPlayerError] = useState('')
+  } = useApp();
+  const [playerState, setPlayerState] = useState("idle");
+  const [playerError, setPlayerError] = useState("");
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
+    const audio = audioRef.current;
+    if (!audio) return;
 
-    setPlayerError('')
+    setPlayerError("");
     if (!currentTrack?.uri) {
-      audio.pause()
-      audio.removeAttribute('src')
-      audio.load()
-      return
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+      return;
     }
 
-    audio.load()
+    audio.load();
     audio.play().catch((error) => {
-      if (error.name !== 'AbortError') {
-        setPlayerState('paused')
-        setPlayerError('Unable to start this audio. Use the player controls to try again.')
+      if (error.name !== "AbortError") {
+        setPlayerState("paused");
+        setPlayerError(
+          "Unable to start this audio. Use the player controls to try again.",
+        );
       }
-    })
-  }, [currentTrack?._id, currentTrack?.uri])
+    });
+  }, [currentTrack?._id, currentTrack?.uri]);
 
-  const handleLogoutClick = async () => {
-    await handleLogout()
-    navigate('/login')
-  }
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  // const handleLogoutClick = async () => {
+  //   await handleLogout();
+  //   navigate("/login");
+  // };
 
   const scrollToTop = () => {
-    navigate('/')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+    navigate("/");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+
 
   return (
     <div className="h-screen overflow-hidden bg-black text-white">
@@ -77,32 +86,32 @@ export default function DashboardLayout({ children }) {
 
             <button
               className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate("/profile")}
             >
               <FaUserCircle /> Profile
             </button>
 
-            {user?.role === 'artist' && (
+            {user?.role === "artist" && (
               <>
                 <button
                   className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
-                  onClick={() => navigate('/upload')}
+                  onClick={() => navigate("/upload")}
                 >
                   <FaUpload /> Upload Song
                 </button>
                 <button
                   className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
-                  onClick={() => navigate('/create-album')}
+                  onClick={() => navigate("/create-album")}
                 >
                   <FaPlus /> Create Album
                 </button>
               </>
             )}
 
-            {user?.role !== 'artist' && (
+            {user?.role !== "artist" && (
               <button
                 className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-green-300 transition hover:bg-green-500/10"
-                onClick={() => navigate('/artist-register')}
+                onClick={() => navigate("/artist-register")}
               >
                 <FaPlus /> Register Artist
               </button>
@@ -116,7 +125,9 @@ export default function DashboardLayout({ children }) {
             <div className="grid gap-3">
               <div className="rounded-md bg-zinc-800/80 p-4">
                 <p className="font-semibold">Your Songs</p>
-                <p className="mt-1 text-sm text-zinc-400">Swipe shelves to explore</p>
+                <p className="mt-1 text-sm text-zinc-400">
+                  Swipe shelves to explore
+                </p>
               </div>
               <div className="rounded-md bg-zinc-800/80 p-4">
                 <p className="font-semibold">Your Albums</p>
@@ -140,19 +151,31 @@ export default function DashboardLayout({ children }) {
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               {/* Mobile Navigation */}
               <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
-                <button className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold" onClick={scrollToTop}>
+                <button
+                  className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
+                  onClick={scrollToTop}
+                >
                   Home
                 </button>
-                <button className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold" onClick={() => navigate('/profile')}>
+                <button
+                  className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
+                  onClick={() => navigate("/profile")}
+                >
                   Profile
                 </button>
-                {user?.role === 'artist' && (
-                  <button className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold" onClick={() => navigate('/upload')}>
+                {user?.role === "artist" && (
+                  <button
+                    className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
+                    onClick={() => navigate("/upload")}
+                  >
                     Upload
                   </button>
                 )}
-                {user?.role !== 'artist' && (
-                  <button className="shrink-0 rounded-full bg-green-500 px-4 py-2 text-sm font-bold text-black" onClick={() => navigate('/artist-register')}>
+                {user?.role !== "artist" && (
+                  <button
+                    className="shrink-0 rounded-full bg-green-500 px-4 py-2 text-sm font-bold text-black"
+                    onClick={() => navigate("/artist-register")}
+                  >
                     Artist
                   </button>
                 )}
@@ -164,14 +187,22 @@ export default function DashboardLayout({ children }) {
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && query.trim()) {
+                      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+                    }
+                  }}
                   className="w-full rounded-full border border-transparent bg-zinc-900 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-white"
-                  placeholder="Search songs, albums, charts, radio"
+                  placeholder="Search songs, artists or albums..."
                 />
               </label>
 
               {/* User Info */}
               <div className="flex items-center gap-3">
-                <button className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold capitalize" onClick={() => navigate('/profile')}>
+                <button
+                  className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold capitalize"
+                  onClick={() => navigate("/profile")}
+                >
                   {user?.username}
                 </button>
                 <button
@@ -186,9 +217,7 @@ export default function DashboardLayout({ children }) {
           </header>
 
           {/* Page Content */}
-          <div className="p-4 pb-8 sm:p-6 lg:p-8">
-            {children}
-          </div>
+          <div className="p-4 pb-8 sm:p-6 lg:p-8">{children}</div>
         </main>
       </div>
 
@@ -196,12 +225,18 @@ export default function DashboardLayout({ children }) {
       <footer className="grid h-28 grid-cols-[1fr_auto] items-center gap-4 border-t border-zinc-800 bg-zinc-950 px-4 md:grid-cols-[1fr_520px_1fr]">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-green-500 to-zinc-800">
-            {currentTrack ? <IoMusicalNotes className="text-2xl text-black" /> : <FaCompactDisc className="text-green-300" />}
+            {currentTrack ? (
+              <IoMusicalNotes className="text-2xl text-black" />
+            ) : (
+              <FaCompactDisc className="text-green-300" />
+            )}
           </div>
           <div className="min-w-0">
-            <p className="truncate font-semibold">{currentTrack?.title || 'Choose a song'}</p>
+            <p className="truncate font-semibold">
+              {currentTrack?.title || "Choose a song"}
+            </p>
             <p className="truncate text-sm text-zinc-400">
-              {currentTrack?.artist?.username || 'Nothing playing yet'}
+              {currentTrack?.artist?.username || "Nothing playing yet"}
             </p>
           </div>
         </div>
@@ -214,37 +249,38 @@ export default function DashboardLayout({ children }) {
             src={currentTrack?.uri || undefined}
             className="w-44 max-w-full md:w-full md:max-w-[520px]"
             onLoadStart={() => {
-              setPlayerError('')
-              setPlayerState('loading')
+              setPlayerError("");
+              setPlayerState("loading");
             }}
             onCanPlay={() => {
-              setPlayerError('')
-              setPlayerState('ready')
+              setPlayerError("");
+              setPlayerState("ready");
             }}
-            onWaiting={() => setPlayerState('loading')}
+            onWaiting={() => setPlayerState("loading")}
             onPlay={() => {
-              setPlayerError('')
-              setPlayerState('playing')
-              setIsPlaying(true)
-              handleTrackStarted(currentTrack)
+              setPlayerError("");
+              setPlayerState("playing");
+              setIsPlaying(true);
+              handleTrackStarted(currentTrack);
             }}
             onPause={() => {
-              setPlayerState('paused')
-              setIsPlaying(false)
+              setPlayerState("paused");
+              setIsPlaying(false);
             }}
             onEnded={() => {
-              setPlayerState('ended')
-              setIsPlaying(false)
-              handleTrackEnded(currentTrack)
+              setPlayerState("ended");
+              setIsPlaying(false);
+              handleTrackEnded(currentTrack);
             }}
             onError={() => {
-              setPlayerState('error')
-              setIsPlaying(false)
-              setPlayerError('Unable to play this audio file.')
+              setPlayerState("error");
+              setIsPlaying(false);
+              setPlayerError("Unable to play this audio file.");
             }}
           />
           <p className="mt-1 min-h-4 text-xs text-red-300" aria-live="polite">
-            {playerError || (playerState === 'loading' ? 'Loading audio...' : '')}
+            {playerError ||
+              (playerState === "loading" ? "Loading audio..." : "")}
           </p>
         </div>
 
@@ -253,6 +289,40 @@ export default function DashboardLayout({ children }) {
           <span>{currentTrack?.comments?.length || 0} comments</span>
         </div>
       </footer>
+            {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-2xl">
+            <h2 className="text-xl font-bold text-white">
+              Logout?
+            </h2>
+
+            <p className="mt-2 text-sm text-zinc-400">
+              Are you sure you want to logout from Orbeat?
+            </p>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-zinc-300 transition hover:bg-zinc-800"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={async () => {
+                  await handleLogout();
+                  setShowLogoutConfirm(false);
+                  navigate("/login");
+                }}
+                className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  )
+  );
 }
