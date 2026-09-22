@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import MainLayout from '../Layouts/MainLayout'
 import RegisterForm from '../components/auth/RegisterForm'
 import { useApp } from '../contexts/AppContext'
 
@@ -13,20 +12,25 @@ export default function Register() {
     try {
       setLocalError('')
       await handleRegister(credentials)
-      navigate('/')
+      navigate('/', { replace: true })
     } catch (err) {
       setLocalError(err.message)
     }
   }
 
   return (
-    <MainLayout>
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl items-center justify-center gap-10 lg:justify-between">
+    <div className="min-h-screen bg-black text-white">
+      <div className="mx-auto flex min-h-screen max-w-6xl items-center justify-center gap-10 px-6 lg:justify-between">
+
         <section className="hidden max-w-xl lg:block">
-          <p className="text-sm font-bold uppercase text-green-400">Orbeat</p>
+          <p className="text-sm font-bold uppercase text-green-400">
+            Orbeat
+          </p>
+
           <h1 className="mt-4 text-7xl font-black leading-none">
             Join the music revolution.
           </h1>
+
           <p className="mt-6 text-lg text-zinc-300">
             Create your account today and start streaming your favorite music.
           </p>
@@ -34,12 +38,20 @@ export default function Register() {
 
         <div className="w-full max-w-md">
           <div className="mb-8 text-center lg:text-left">
-            <h1 className="text-4xl font-black text-green-500">Orbeat</h1>
+            <h1 className="text-4xl font-black text-green-500">
+              Orbeat
+            </h1>
+
             <p className="mt-2 text-sm text-zinc-400">
               Create a new account to get started.
             </p>
           </div>
-          <RegisterForm onRegister={onRegister} error={localError || error} />
+
+          <RegisterForm
+            onRegister={onRegister}
+            error={localError || error}
+          />
+
           <p className="mt-4 text-center text-sm text-zinc-400">
             Already have an account?{' '}
             <button
@@ -50,7 +62,8 @@ export default function Register() {
             </button>
           </p>
         </div>
+
       </div>
-    </MainLayout>
+    </div>
   )
 }
