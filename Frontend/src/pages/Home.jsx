@@ -721,16 +721,14 @@ export default function Home() {
                 />
 
                 {popularSongs.length > 0 ? (
-                  <div className="flex gap-4 overflow-x-auto pb-2">
-                    <MusicList
-                      musics={popularSongs.slice(0, 10)}
-                      onPlay={handleTogglePlayback}
-                      onLike={handleLike}
-                      onComment={handleComment}
-                      currentTrack={currentTrack}
-                      likedIds={likedIds}
-                    />
-                  </div>
+                  <MusicList
+                    musics={popularSongs.slice(0, 10)}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
                 ) : (
                   <MobileEmpty text="No trending songs yet." />
                 )}
@@ -822,20 +820,14 @@ export default function Home() {
                 />
 
                 {freshDrops.length > 0 ? (
-                  <div className="flex gap-4 overflow-x-auto pb-2">
-                    {freshDrops.slice(0, 10).map((music) => (
-                      <div key={music._id} className="w-40 shrink-0">
-                        <MusicList
-                          musics={[music]}
-                          onPlay={handleTogglePlayback}
-                          onLike={handleLike}
-                          onComment={handleComment}
-                          currentTrack={currentTrack}
-                          likedIds={likedIds}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <MusicList
+                    musics={freshDrops.slice(0, 10)}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
                 ) : (
                   <MobileEmpty text="No new releases yet." />
                 )}
@@ -849,20 +841,14 @@ export default function Home() {
                 />
 
                 {popularRadio.length > 0 ? (
-                  <div className="flex gap-4 overflow-x-auto pb-2">
-                    {popularRadio.slice(0, 10).map((music) => (
-                      <div key={music._id} className="w-40 shrink-0">
-                        <MusicList
-                          musics={[music]}
-                          onPlay={handleTogglePlayback}
-                          onLike={handleLike}
-                          onComment={handleComment}
-                          currentTrack={currentTrack}
-                          likedIds={likedIds}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <MusicList
+                    musics={popularRadio.slice(0, 10)}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
                 ) : (
                   <MobileEmpty text="Popular releases will appear here." />
                 )}
@@ -876,20 +862,14 @@ export default function Home() {
                 />
 
                 {editorPicks.length > 0 ? (
-                  <div className="flex gap-4 overflow-x-auto pb-2">
-                    {editorPicks.slice(0, 10).map((music) => (
-                      <div key={music._id} className="w-40 shrink-0">
-                        <MusicList
-                          musics={[music]}
-                          onPlay={handleTogglePlayback}
-                          onLike={handleLike}
-                          onComment={handleComment}
-                          currentTrack={currentTrack}
-                          likedIds={likedIds}
-                        />
-                      </div>
-                    ))}
-                  </div>
+                  <MusicList
+                    musics={editorPicks.slice(0, 10)}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
                 ) : (
                   <MobileEmpty text="More music will appear here." />
                 )}

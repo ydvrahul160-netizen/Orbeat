@@ -18,19 +18,18 @@ export default function MusicList({
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-4 pr-4 snap-x snap-mandatory scrollbar-hide">
+    <div className="flex min-w-0 gap-4 overflow-x-auto pb-2 pr-4 snap-x snap-mandatory scrollbar-hide">
       {musics.map((music, index) => (
-        <div key={music._id} className="shrink-0 snap-start">
-          <MusicCard
-            music={music}
-            onPlay={onPlay}
-            onLike={onLike}
-            onComment={onComment}
-            isActive={currentTrack?._id === music._id}
-            isLiked={likedIds.has(music._id)}
-            rank={showRank ? index + 1 : undefined}
-          />
-        </div>
+        <MusicCard
+          key={music._id}
+          music={music}
+          onPlay={onPlay}
+          onLike={onLike}
+          onComment={onComment}
+          isActive={currentTrack?._id === music._id}
+          isLiked={likedIds.has(music._id)}
+          rank={showRank ? index + 1 : undefined}
+        />
       ))}
     </div>
   );
