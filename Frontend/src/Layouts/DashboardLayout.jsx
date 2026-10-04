@@ -25,12 +25,17 @@ export default function DashboardLayout({ children }) {
     handleTrackStarted,
     handleTrackEnded,
     setIsPlaying,
+    isPlaying,
     audioRef,
   } = useApp();
 
   const [playerState, setPlayerState] = useState("idle");
   const [playerError, setPlayerError] = useState("");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const [currentTime, setCurrentTime] = useState(0);
+const [duration, setDuration] = useState(0);
+const [volume, setVolume] = useState(1);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -57,6 +62,29 @@ export default function DashboardLayout({ children }) {
       }
     });
   }, [currentTrack?._id, currentTrack?.uri]);
+
+  useEffect(() => {
+  const audio = audioRef.current;
+  if (!audio) return;
+
+  const updateTime = () => {
+    setCurrentTime(audio.currentTime);
+  };
+
+  const updateDuration = () => {
+    setDuration(audio.duration || 0);
+  };
+
+  audio.addEventListener("timeupdate", updateTime);
+  audio.addEventListener("loadedmetadata", updateDuration);
+  audio.addEventListener("durationchange", updateDuration);
+
+  return () => {
+    audio.removeEventListener("timeupdate", updateTime);
+    audio.removeEventListener("loadedmetadata", updateDuration);
+    audio.removeEventListener("durationchange", updateDuration);
+  };
+}, [currentTrack]);
 
   const handleLogoutClick = () => {
     setShowLogoutConfirm(true);
@@ -356,79 +384,230 @@ export default function DashboardLayout({ children }) {
       {/* =====================================================
           PLAYER FOOTER
       ====================================================== */}
-      <footer className="grid h-28 grid-cols-[1fr_auto] items-center gap-4 border-t border-zinc-800 bg-zinc-950 px-4 md:grid-cols-[1fr_520px_1fr]">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-green-500 to-zinc-800">
-            {currentTrack ? (
-              <IoMusicalNotes className="text-2xl text-black" />
-            ) : (
-              <FaCompactDisc className="text-green-300" />
-            )}
-          </div>
+<footer className="grid h-24 grid-cols-[1fr_auto] items-center gap-4 border-t border-zinc-800/60 px-4 md:grid-cols-[1fr_520px_1fr] md:px-5">
 
-          <div className="min-w-0">
-            <p className="truncate font-semibold">
-              {currentTrack?.title || "Choose a song"}
-            </p>
+  {/* Current Song */}
+  <div className="flex min-w-0 items-center gap-3">
 
-            <p className="truncate text-sm text-zinc-400">
-              {currentTrack?.artist?.username || "Nothing playing yet"}
-            </p>
-          </div>
+    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-zinc-900">
+      {currentTrack?.coverImage ? (
+        <img
+          src={currentTrack.coverImage}
+          alt={currentTrack.title}
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center">
+          <IoMusicalNotes className="text-2xl text-zinc-600" />
         </div>
+      )}
+    </div>
 
-        <div className="min-w-0 md:col-auto">
-          <audio
-            ref={audioRef}
-            controls
-            autoPlay={Boolean(currentTrack)}
-            src={currentTrack?.uri || undefined}
-            className="w-44 max-w-full md:w-full md:max-w-[520px]"
-            onLoadStart={() => {
-              setPlayerError("");
-              setPlayerState("loading");
-            }}
-            onCanPlay={() => {
-              setPlayerError("");
-              setPlayerState("ready");
-            }}
-            onWaiting={() => setPlayerState("loading")}
-            onPlay={() => {
-              setPlayerError("");
-              setPlayerState("playing");
-              setIsPlaying(true);
-              handleTrackStarted(currentTrack);
-            }}
-            onPause={() => {
-              setPlayerState("paused");
-              setIsPlaying(false);
-            }}
-            onEnded={() => {
-              setPlayerState("ended");
-              setIsPlaying(false);
-              handleTrackEnded(currentTrack);
-            }}
-            onError={() => {
-              setPlayerState("error");
-              setIsPlaying(false);
-              setPlayerError("Unable to play this audio file.");
-            }}
-          />
+    <div className="min-w-0">
+      <p className="truncate text-sm font-semibold text-white">
+        {currentTrack?.title || "Choose a song"}
+      </p>
 
-          <p
-            className="mt-1 min-h-4 text-xs text-red-300"
-            aria-live="polite"
-          >
-            {playerError ||
-              (playerState === "loading" ? "Loading audio..." : "")}
-          </p>
-        </div>
+      <p className="truncate text-xs text-zinc-400">
+        {currentTrack?.artist?.username || "Nothing playing yet"}
+      </p>
+    </div>
+  </div>
 
-        <div className="hidden justify-end gap-4 text-sm text-zinc-400 md:flex">
-          <span>{currentTrack?.likes?.length || 0} likes</span>
-          <span>{currentTrack?.comments?.length || 0} comments</span>
-        </div>
-      </footer>
+
+  {/* CENTER PLAYER */}
+  <div className="flex w-full min-w-0 flex-col items-center">
+
+    {/* Controls */}
+    <div className="flex items-center gap-5">
+
+      <button
+        type="button"
+        className="text-zinc-400 transition hover:text-white"
+        onClick={() => {
+          if (audioRef.current) {
+            audioRef.current.currentTime = Math.max(
+              0,
+              audioRef.current.currentTime - 10
+            );
+          }
+        }}
+        aria-label="Previous 10 seconds"
+      >
+        <span className="text-xs font-bold">-10</span>
+      </button>
+
+
+      <button
+        type="button"
+        className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition hover:scale-105"
+        onClick={() => {
+          if (!audioRef.current || !currentTrack) return;
+
+          if (audioRef.current.paused) {
+            audioRef.current.play();
+          } else {
+            audioRef.current.pause();
+          }
+        }}
+        aria-label={isPlaying ? "Pause" : "Play"}
+      >
+        {isPlaying ? (
+          <span className="text-sm">❚❚</span>
+        ) : (
+          <span className="ml-0.5 text-sm">▶</span>
+        )}
+      </button>
+
+
+      <button
+        type="button"
+        className="text-zinc-400 transition hover:text-white"
+        onClick={() => {
+          if (audioRef.current) {
+            audioRef.current.currentTime = Math.min(
+              audioRef.current.duration || 0,
+              audioRef.current.currentTime + 10
+            );
+          }
+        }}
+        aria-label="Next 10 seconds"
+      >
+        <span className="text-xs font-bold">+10</span>
+      </button>
+
+    </div>
+
+
+    {/* Progress */}
+    <div className="mt-1 flex w-full items-center gap-2">
+
+      <span className="w-8 text-right text-[10px] text-zinc-500">
+        {formatTime(currentTime)}
+      </span>
+
+      <input
+        type="range"
+        min="0"
+        max={duration || 0}
+        value={currentTime}
+        onChange={(e) => {
+          const time = Number(e.target.value);
+
+          if (audioRef.current) {
+            audioRef.current.currentTime = time;
+          }
+
+          setCurrentTime(time);
+        }}
+        className="h-1 flex-1 cursor-pointer accent-green-500"
+        aria-label="Song progress"
+      />
+
+      <span className="w-8 text-[10px] text-zinc-500">
+        {formatTime(duration)}
+      </span>
+
+    </div>
+
+  </div>
+
+
+  {/* RIGHT SIDE */}
+  <div className="hidden items-center justify-end gap-4 md:flex">
+
+    {/* Volume */}
+    <div className="flex items-center gap-2">
+
+      <span className="text-sm text-zinc-500">
+        🔊
+      </span>
+
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volume}
+        onChange={(e) => {
+          const value = Number(e.target.value);
+
+          setVolume(value);
+
+          if (audioRef.current) {
+            audioRef.current.volume = value;
+          }
+        }}
+        className="w-20 cursor-pointer accent-green-500"
+        aria-label="Volume"
+      />
+
+    </div>
+
+
+    {/* Stats */}
+    <div className="flex items-center gap-3 text-xs text-zinc-500">
+
+      <span>
+        {currentTrack?.likes?.length || 0} likes
+      </span>
+
+      <span>
+        {currentTrack?.comments?.length || 0} comments
+      </span>
+
+    </div>
+
+  </div>
+
+
+  {/* HIDDEN NATIVE AUDIO */}
+  <audio
+    ref={audioRef}
+    autoPlay={Boolean(currentTrack)}
+    src={currentTrack?.uri || undefined}
+    className="hidden"
+
+    onLoadStart={() => {
+      setPlayerError("");
+      setPlayerState("loading");
+    }}
+
+    onCanPlay={() => {
+      setPlayerError("");
+      setPlayerState("ready");
+    }}
+
+    onWaiting={() => {
+      setPlayerState("loading");
+    }}
+
+    onPlay={() => {
+      setPlayerError("");
+      setPlayerState("playing");
+      setIsPlaying(true);
+      handleTrackStarted(currentTrack);
+    }}
+
+    onPause={() => {
+      setPlayerState("paused");
+      setIsPlaying(false);
+    }}
+
+    onEnded={() => {
+      setPlayerState("ended");
+      setIsPlaying(false);
+      handleTrackEnded(currentTrack);
+    }}
+
+    onError={() => {
+      setPlayerState("error");
+      setIsPlaying(false);
+      setPlayerError("Unable to play this audio file.");
+    }}
+  />
+
+</footer>
 
       {/* =====================================================
           LOGOUT CONFIRMATION
@@ -468,4 +647,16 @@ export default function DashboardLayout({ children }) {
       )}
     </div>
   );
+}
+function formatTime(seconds) {
+  if (!seconds || Number.isNaN(seconds)) {
+    return "0:00";
+  }
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+
+  return `${minutes}:${remainingSeconds
+    .toString()
+    .padStart(2, "0")}`;
 }

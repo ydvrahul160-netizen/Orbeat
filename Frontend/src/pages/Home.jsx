@@ -13,6 +13,7 @@ import {
   IoSparklesOutline,
   IoTrendingUpOutline,
 } from "react-icons/io5";
+
 import { useApp } from "../contexts/AppContext";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import { getScore } from "../utils/helpers";
@@ -150,9 +151,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* =====================================================
-    ORBEAT HERO
-====================================================== */}
+          {/* ===================================================== ORBEAT HERO ====================================================== */}
           {user ? (
             <section className="relative mb-12 overflow-hidden rounded-[2rem] border border-white/[0.08] bg-gradient-to-br from-zinc-900 via-zinc-950 to-[#10101a] px-6 py-8 shadow-2xl sm:px-10 sm:py-10 lg:px-12 lg:py-12">
               <div className="pointer-events-none absolute -right-20 -top-32 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl" />
@@ -349,9 +348,7 @@ export default function Home() {
             </section>
           )}
 
-          {/* =====================================================
-              SEARCH RESULTS
-          ====================================================== */}
+          {/* ===================================================== SEARCH RESULTS ====================================================== */}
           {query.trim() && (
             <section className="mb-12 rounded-3xl border border-white/[0.08] bg-zinc-950/80 p-5 sm:p-7">
               <div className="flex items-center justify-between gap-4">
@@ -437,274 +434,470 @@ export default function Home() {
           )}
 
           <div id="discover">
-            {/* =====================================================
-                FOR YOUR ORBIT
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="Personal discovery"
-                title="For Your Orbit"
-                description="A mix of tracks worth your attention."
-                icon={<IoSparklesOutline />}
-              />
-
-              {recommendedSongs.length > 0 ? (
-                <MusicList
-                  musics={recommendedSongs}
-                  onPlay={handleTogglePlayback}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  currentTrack={currentTrack}
-                  likedIds={likedIds}
+            {/* DESKTOP */}
+            <div className="hidden md:block">
+              {/* ===================================================== DESKTOP ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="Personal discovery"
+                  title="For Your Orbit"
+                  description="A mix of tracks worth your attention."
+                  icon={<IoSparklesOutline />}
                 />
-              ) : (
-                <EmptyShelf text="Keep listening and your recommendations will evolve." />
-              )}
-            </section>
 
-            {/* =====================================================
-                WHAT'S MOVING
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="Community pulse"
-                title="What's Moving"
-                description="Tracks getting attention across Orbeat."
-                icon={<IoTrendingUpOutline />}
-              />
+                {recommendedSongs.length > 0 ? (
+                  <MusicList
+                    musics={recommendedSongs}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
+                ) : (
+                  <EmptyShelf text="Keep listening and your recommendations will evolve." />
+                )}
+              </section>
 
-              {popularRadio.length > 0 ? (
-                <MusicList
-                  musics={popularRadio}
-                  onPlay={handleTogglePlayback}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  currentTrack={currentTrack}
-                  likedIds={likedIds}
+              {/* ===================================================== WHAT'S MOVING ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="Community pulse"
+                  title="What's Moving"
+                  description="Tracks getting attention across Orbeat."
+                  icon={<IoTrendingUpOutline />}
                 />
-              ) : (
-                <EmptyShelf text="There is not enough activity yet." />
-              )}
-            </section>
 
-            {/* =====================================================
-                ORBEAT CHARTS
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="The weekly pulse"
-                title="Orbeat Charts"
-                description="The tracks rising through community activity."
-                icon={<FaChartLine />}
-              />
+                {popularRadio.length > 0 ? (
+                  <MusicList
+                    musics={popularRadio}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
+                ) : (
+                  <EmptyShelf text="There is not enough activity yet." />
+                )}
+              </section>
 
-              {featuredCharts.length > 0 ? (
-                <MusicList
-                  musics={featuredCharts}
-                  onPlay={handleTogglePlayback}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  currentTrack={currentTrack}
-                  likedIds={likedIds}
-                  showRank
+              {/* ===================================================== ORBEAT CHARTS ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="The weekly pulse"
+                  title="Orbeat Charts"
+                  description="The tracks rising through community activity."
+                  icon={<FaChartLine />}
                 />
-              ) : (
-                <EmptyShelf text="Charts will appear as listeners discover more music." />
-              )}
-            </section>
 
-            {/* =====================================================
-                FRESH DROPS
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="New arrivals"
-                title="Just Released"
-                description="Fresh music recently added by creators."
-                icon={<IoMusicalNotes />}
-              />
+                {featuredCharts.length > 0 ? (
+                  <MusicList
+                    musics={featuredCharts}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                    showRank
+                  />
+                ) : (
+                  <EmptyShelf text="Charts will appear as listeners discover more music." />
+                )}
+              </section>
 
-              {freshDrops.length > 0 ? (
-                <MusicList
-                  musics={freshDrops}
-                  onPlay={handleTogglePlayback}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  currentTrack={currentTrack}
-                  likedIds={likedIds}
+              {/* ===================================================== FRESH DROPS ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="New arrivals"
+                  title="Just Released"
+                  description="Fresh music recently added by creators."
+                  icon={<IoMusicalNotes />}
                 />
-              ) : (
-                <EmptyShelf text="No new releases are available yet." />
-              )}
-            </section>
 
-            {/* =====================================================
-                EDITOR'S PICKS
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="Curated discovery"
-                title="Curated for You"
-                description="Recent additions selected from the Orbeat catalog."
-                icon={<FaStar />}
-              />
+                {freshDrops.length > 0 ? (
+                  <MusicList
+                    musics={freshDrops}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
+                ) : (
+                  <EmptyShelf text="No new releases are available yet." />
+                )}
+              </section>
 
-              {editorPicks.length > 0 ? (
-                <MusicList
-                  musics={editorPicks}
-                  onPlay={handleTogglePlayback}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  currentTrack={currentTrack}
-                  likedIds={likedIds}
+              {/* ===================================================== EDITOR'S PICKS ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="Curated discovery"
+                  title="Curated for You"
+                  description="Recent additions selected from the Orbeat catalog."
+                  icon={<FaStar />}
                 />
-              ) : (
-                <EmptyShelf text="Curated picks will appear as the catalog grows." />
-              )}
-            </section>
 
-            {/* =====================================================
-                HIDDEN GEMS
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="Look beyond the obvious"
-                title="Under the Radar"
-                description="Less-played tracks that deserve another listen."
-                icon={<FaRegCompass />}
-              />
+                {editorPicks.length > 0 ? (
+                  <MusicList
+                    musics={editorPicks}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
+                ) : (
+                  <EmptyShelf text="Curated picks will appear as the catalog grows." />
+                )}
+              </section>
 
-              {hiddenGems.length > 0 ? (
-                <MusicList
-                  musics={hiddenGems}
-                  onPlay={handleTogglePlayback}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  currentTrack={currentTrack}
-                  likedIds={likedIds}
+              {/* ===================================================== HIDDEN GEMS ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="Look beyond the obvious"
+                  title="Under the Radar"
+                  description="Less-played tracks that deserve another listen."
+                  icon={<FaRegCompass />}
                 />
-              ) : (
-                <EmptyShelf text="Hidden gems will emerge as more creators publish music." />
-              )}
-            </section>
 
-            {/* =====================================================
-                CREATOR SPOTLIGHT
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="Meet the creators"
-                title="Creator Spotlight"
-                description="Independent voices shaping the Orbeat catalog."
-                icon={<IoSparklesOutline />}
-              />
+                {hiddenGems.length > 0 ? (
+                  <MusicList
+                    musics={hiddenGems}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
+                ) : (
+                  <EmptyShelf text="Hidden gems will emerge as more creators publish music." />
+                )}
+              </section>
 
-              {spotlightCreators.length > 0 ? (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  {spotlightCreators.map((spotlight) => {
-                    const artist = spotlight.artist;
+              {/* ===================================================== CREATOR SPOTLIGHT ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="Meet the creators"
+                  title="Creator Spotlight"
+                  description="Independent voices shaping the Orbeat catalog."
+                  icon={<IoSparklesOutline />}
+                />
 
-                    return (
-                      <article
-                        key={artist?._id}
-                        className="group relative overflow-hidden rounded-3xl border border-white/[0.07] bg-zinc-950 p-5 transition duration-300 hover:-translate-y-1 hover:border-violet-400/20"
+                {spotlightCreators.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    {spotlightCreators.map((spotlight) => {
+                      const artist = spotlight.artist;
+
+                      return (
+                        <article
+                          key={artist?._id}
+                          className="group relative overflow-hidden rounded-3xl border border-white/[0.07] bg-zinc-950 p-5 transition duration-300 hover:-translate-y-1 hover:border-violet-400/20"
+                        >
+                          <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-violet-500/[0.08] blur-3xl" />
+
+                          <div className="relative">
+                            <Avatar artist={artist} size="h-20 w-20" />
+
+                            <p className="mt-5 text-xs font-medium tracking-wider text-zinc-500 uppercase">
+                              Creator
+                            </p>
+
+                            <h3 className="mt-1 truncate text-xl font-bold">
+                              {artist?.username || "Unknown artist"}
+                            </h3>
+
+                            <p className="mt-2 text-sm text-zinc-500">
+                              {spotlight.tracks?.length || 0} featured tracks
+                            </p>
+
+                            {spotlight.tracks?.[0] && (
+                              <button
+                                onClick={() =>
+                                  handleTogglePlayback(spotlight.tracks[0])
+                                }
+                                className="mt-5 flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
+                              >
+                                <FaPlay className="text-[9px]" />
+                                Play spotlight
+                              </button>
+                            )}
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <EmptyShelf text="Creator spotlights will appear as the community grows." />
+                )}
+              </section>
+
+              {/* ===================================================== RECENTLY PLAYED ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="Your listening trail"
+                  title="Recently Played"
+                  description="Pick up where you left off."
+                  icon={<FaArrowRight />}
+                />
+
+                {homeSections.recentlyPlayed?.length > 0 ? (
+                  <MusicList
+                    musics={homeSections.recentlyPlayed}
+                    onPlay={handleTogglePlayback}
+                    onLike={handleLike}
+                    onComment={handleComment}
+                    currentTrack={currentTrack}
+                    likedIds={likedIds}
+                  />
+                ) : (
+                  <EmptyShelf text="Your listening history will appear here after you start exploring." />
+                )}
+              </section>
+
+              {/* ===================================================== ORBIT TRAIL ====================================================== */}
+              <section className="mb-12">
+                <OrbitTrail
+                  currentTrack={currentTrack}
+                  recommendations={recommendedSongs}
+                  hiddenGems={hiddenGems}
+                />
+              </section>
+
+              {/* ===================================================== ALBUMS ====================================================== */}
+              <section className="mb-12">
+                <SectionHeader
+                  eyebrow="Longer listens"
+                  title="Latest Releases"
+                  description="Albums and collections from the Orbeat catalog."
+                  icon={<IoMusicalNotes />}
+                />
+
+                {filteredAlbums.length > 0 ? (
+                  <AlbumList albums={filteredAlbums} onSelect={selectAlbum} />
+                ) : (
+                  <EmptyShelf text="No albums are available yet." />
+                )}
+              </section>
+            </div>
+            {/* MOBILE */}
+            {/* ===================================================== MOBILE HOME ===================================================== */}
+            <div className="md:hidden">
+              {/* Mobile discovery intro */}
+              <section className="mb-8 overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-800 to-zinc-950 p-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-green-400">
+                  Orbeat
+                </p>
+
+                <h1 className="mt-2 text-3xl font-bold leading-tight text-white">
+                  Discover your
+                  <span className="block text-green-400">
+                    next favorite song.
+                  </span>
+                </h1>
+
+                <p className="mt-3 max-w-sm text-sm leading-6 text-zinc-400">
+                  Explore trending songs, artists and new releases from the
+                  Orbeat community.
+                </p>
+
+                <button
+                  onClick={() =>
+                    document
+                      .getElementById("mobile-trending")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  className="mt-5 rounded-full bg-green-500 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-green-400"
+                >
+                  Explore music
+                </button>
+              </section>
+
+              {/* Trending Songs */}
+              <section id="mobile-trending" className="mb-9">
+                <MobileSectionHeader
+                  title="Trending songs"
+                  subtitle="What listeners are playing right now."
+                />
+
+                {popularSongs.length > 0 ? (
+                  <div className="flex gap-4 overflow-x-auto pb-2">
+                    <MusicList
+                      musics={popularSongs.slice(0, 10)}
+                      onPlay={handleTogglePlayback}
+                      onLike={handleLike}
+                      onComment={handleComment}
+                      currentTrack={currentTrack}
+                      likedIds={likedIds}
+                    />
+                  </div>
+                ) : (
+                  <MobileEmpty text="No trending songs yet." />
+                )}
+              </section>
+
+              {/* Popular Artists */}
+              <section className="mb-9">
+                <MobileSectionHeader
+                  title="Popular artists"
+                  subtitle="Creators getting attention on Orbeat."
+                />
+
+                {searchedArtists.length > 0 ? (
+                  <div className="flex gap-5 overflow-x-auto pb-2">
+                    {searchedArtists.slice(0, 10).map((artist) => (
+                      <button
+                        key={artist._id}
+                        type="button"
+                        className="w-24 shrink-0 text-center"
                       >
-                        <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-violet-500/[0.08] blur-3xl" />
-
-                        <div className="relative">
-                          <Avatar artist={artist} size="h-20 w-20" />
-
-                          <p className="mt-5 text-xs font-medium tracking-wider text-zinc-500 uppercase">
-                            Creator
-                          </p>
-
-                          <h3 className="mt-1 truncate text-xl font-bold">
-                            {artist?.username || "Unknown artist"}
-                          </h3>
-
-                          <p className="mt-2 text-sm text-zinc-500">
-                            {spotlight.tracks?.length || 0} featured tracks
-                          </p>
-
-                          {spotlight.tracks?.[0] && (
-                            <button
-                              onClick={() =>
-                                handleTogglePlayback(spotlight.tracks[0])
-                              }
-                              className="mt-5 flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/[0.1]"
-                            >
-                              <FaPlay className="text-[9px]" />
-                              Play spotlight
-                            </button>
-                          )}
+                        <div className="mx-auto h-24 w-24 overflow-hidden rounded-full bg-zinc-800">
+                          <Avatar artist={artist} size="h-full w-full" />
                         </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              ) : (
-                <EmptyShelf text="Creator spotlights will appear as the community grows." />
-              )}
-            </section>
 
-            {/* =====================================================
-                RECENTLY PLAYED
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="Your listening trail"
-                title="Recently Played"
-                description="Pick up where you left off."
-                icon={<FaArrowRight />}
-              />
+                        <p className="mt-3 truncate text-sm font-semibold text-white">
+                          {artist.username}
+                        </p>
 
-              {homeSections.recentlyPlayed?.length > 0 ? (
-                <MusicList
-                  musics={homeSections.recentlyPlayed}
-                  onPlay={handleTogglePlayback}
-                  onLike={handleLike}
-                  onComment={handleComment}
-                  currentTrack={currentTrack}
-                  likedIds={likedIds}
+                        <p className="mt-1 text-xs text-zinc-500">Artist</p>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <MobileEmpty text="Artists will appear here as the catalog grows." />
+                )}
+              </section>
+
+              {/* Popular Albums */}
+              <section className="mb-9">
+                <MobileSectionHeader
+                  title="Popular albums & singles"
+                  subtitle="Releases worth checking out."
                 />
-              ) : (
-                <EmptyShelf text="Your listening history will appear here after you start exploring." />
-              )}
-            </section>
 
-            {/* =====================================================
-                ORBIT TRAIL
-            ====================================================== */}
-            <section className="mb-12">
-              <OrbitTrail
-                currentTrack={currentTrack}
-                recommendations={recommendedSongs}
-                hiddenGems={hiddenGems}
-              />
-            </section>
+                {filteredAlbums.length > 0 ? (
+                  <div className="flex gap-4 overflow-x-auto pb-2">
+                    {filteredAlbums.slice(0, 10).map((album) => (
+                      <div key={album._id} className="w-40 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => selectAlbum(album._id)}
+                          className="w-full text-left"
+                        >
+                          <div className="aspect-square overflow-hidden rounded-lg bg-zinc-800">
+                            {album.coverImage || album.imageUrl ? (
+                              <img
+                                src={album.coverImage || album.imageUrl}
+                                alt={album.title}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center">
+                                <IoMusicalNotes className="text-4xl text-zinc-600" />
+                              </div>
+                            )}
+                          </div>
 
-            {/* =====================================================
-                ALBUMS
-            ====================================================== */}
-            <section className="mb-12">
-              <SectionHeader
-                eyebrow="Longer listens"
-                title="Latest Releases"
-                description="Albums and collections from the Orbeat catalog."
-                icon={<IoMusicalNotes />}
-              />
+                          <p className="mt-3 truncate text-sm font-semibold text-white">
+                            {album.title}
+                          </p>
 
-              {filteredAlbums.length > 0 ? (
-                <AlbumList albums={filteredAlbums} onSelect={selectAlbum} />
-              ) : (
-                <EmptyShelf text="No albums are available yet." />
-              )}
-            </section>
+                          <p className="mt-1 truncate text-xs text-zinc-500">
+                            {album.artist?.username || "Unknown artist"}
+                          </p>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <MobileEmpty text="No albums are available yet." />
+                )}
+              </section>
+
+              {/* Just Released */}
+              <section className="mb-9">
+                <MobileSectionHeader
+                  title="Just released"
+                  subtitle="Fresh music from Orbeat creators."
+                />
+
+                {freshDrops.length > 0 ? (
+                  <div className="flex gap-4 overflow-x-auto pb-2">
+                    {freshDrops.slice(0, 10).map((music) => (
+                      <div key={music._id} className="w-40 shrink-0">
+                        <MusicList
+                          musics={[music]}
+                          onPlay={handleTogglePlayback}
+                          onLike={handleLike}
+                          onComment={handleComment}
+                          currentTrack={currentTrack}
+                          likedIds={likedIds}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <MobileEmpty text="No new releases yet." />
+                )}
+              </section>
+
+              {/* Popular Releases */}
+              <section className="mb-9">
+                <MobileSectionHeader
+                  title="Popular releases"
+                  subtitle="Music listeners are coming back to."
+                />
+
+                {popularRadio.length > 0 ? (
+                  <div className="flex gap-4 overflow-x-auto pb-2">
+                    {popularRadio.slice(0, 10).map((music) => (
+                      <div key={music._id} className="w-40 shrink-0">
+                        <MusicList
+                          musics={[music]}
+                          onPlay={handleTogglePlayback}
+                          onLike={handleLike}
+                          onComment={handleComment}
+                          currentTrack={currentTrack}
+                          likedIds={likedIds}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <MobileEmpty text="Popular releases will appear here." />
+                )}
+              </section>
+
+              {/* More music */}
+              <section className="mb-8">
+                <MobileSectionHeader
+                  title="More to explore"
+                  subtitle="Keep discovering new music."
+                />
+
+                {editorPicks.length > 0 ? (
+                  <div className="flex gap-4 overflow-x-auto pb-2">
+                    {editorPicks.slice(0, 10).map((music) => (
+                      <div key={music._id} className="w-40 shrink-0">
+                        <MusicList
+                          musics={[music]}
+                          onPlay={handleTogglePlayback}
+                          onLike={handleLike}
+                          onComment={handleComment}
+                          currentTrack={currentTrack}
+                          likedIds={likedIds}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <MobileEmpty text="More music will appear here." />
+                )}
+              </section>
+            </div>
           </div>
 
-          {/* =====================================================
-              FOOTER / PRODUCT STATEMENT
-          ====================================================== */}
+          {/* ===================================================== FOOTER / PRODUCT STATEMENT ====================================================== */}
           <footer className="relative mt-16 overflow-hidden rounded-[2rem] border border-white/[0.08] bg-zinc-950">
             <div className="relative overflow-hidden px-6 py-10 sm:px-10">
               <div className="absolute -right-20 -top-28 h-72 w-72 rounded-full bg-violet-500/[0.07] blur-3xl" />
@@ -791,6 +984,26 @@ function FooterItem({ title, text }) {
       <h3 className="font-semibold text-white">{title}</h3>
 
       <p className="mt-2 text-sm leading-6 text-zinc-500">{text}</p>
+    </div>
+  );
+}
+
+function MobileSectionHeader({ title, subtitle }) {
+  return (
+    <div className="mb-4">
+      <h2 className="text-xl font-bold tracking-tight text-white">{title}</h2>
+
+      <p className="mt-1 text-xs text-zinc-500">{subtitle}</p>
+    </div>
+  );
+}
+
+function MobileEmpty({ text }) {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-950 px-5 py-8 text-center">
+      <IoMusicalNotes className="mx-auto text-2xl text-zinc-700" />
+
+      <p className="mt-2 text-xs text-zinc-500">{text}</p>
     </div>
   );
 }

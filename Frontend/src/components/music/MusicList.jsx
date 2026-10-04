@@ -18,9 +18,9 @@ export default function MusicList({
   }
 
   return (
-    <div className="flex gap-5 overflow-x-auto pb-4 pr-4 snap-x snap-mandatory">
+    <div className="flex gap-2 overflow-x-auto pb-4 pr-4 snap-x snap-mandatory scrollbar-hide">
       {musics.map((music, index) => (
-        <div key={music._id} className="snap-start">
+        <div key={music._id} className="shrink-0 snap-start">
           <MusicCard
             music={music}
             onPlay={onPlay}

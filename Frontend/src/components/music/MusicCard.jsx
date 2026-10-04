@@ -17,15 +17,12 @@ export default function MusicCard({
   const { currentTrack, isPlaying } = useApp();
   const [commentsOpen, setCommentsOpen] = useState(false);
 
-  const isPlayingCurrent =
-    isPlaying && currentTrack?._id === music._id;
+  const isPlayingCurrent = isPlaying && currentTrack?._id === music._id;
 
   return (
     <article
       className={`group w-52 shrink-0 snap-start rounded-lg p-3 transition-colors duration-300 sm:w-56 ${
-        isActive
-          ? "bg-zinc-800"
-          : "bg-transparent hover:bg-zinc-900"
+        isActive ? "bg-zinc-800" : "bg-transparent hover:bg-zinc-900"
       }`}
     >
       {/* Cover */}
@@ -52,11 +49,9 @@ export default function MusicCard({
           className={`absolute bottom-2 right-2 flex h-11 w-11 items-center justify-center rounded-full bg-green-500 text-black shadow-xl transition-all duration-300 hover:scale-105 hover:bg-green-400 ${
             isPlayingCurrent
               ? "translate-y-0 opacity-100"
-              : "translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100"
+              : "translate-y-0 opacity-100 sm:translate-y-2 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100"
           }`}
-          aria-label={`${isPlayingCurrent ? "Pause" : "Play"} ${
-            music.title
-          }`}
+          aria-label={`${isPlayingCurrent ? "Pause" : "Play"} ${music.title}`}
         >
           {isPlayingCurrent ? (
             <FaPause className="text-sm" />
@@ -77,9 +72,7 @@ export default function MusicCard({
       <div className="mt-3 min-w-0">
         <h3
           className={`truncate text-sm font-semibold ${
-            isPlayingCurrent
-              ? "text-green-400"
-              : "text-white"
+            isPlayingCurrent ? "text-green-400" : "text-white"
           }`}
           title={music.title}
         >
