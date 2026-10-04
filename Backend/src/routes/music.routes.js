@@ -94,7 +94,7 @@ router.delete("/albums/:albumId", authMiddleware.authArtist, musicController.del
 router.get("/search", authMiddleware.authUser, searchController.search)
 
 // 3: api for user - can fetch all songs
-router.get("/", authMiddleware.authUser, musicController.getAllMusics)
+router.get("/", musicController.getAllMusics)
 
 router.post("/:musicId/like", authMiddleware.authUser, musicController.toggleLike)
 
@@ -103,7 +103,7 @@ router.post("/:musicId/comment", authMiddleware.authUser, musicController.addCom
 router.post("/:musicId/play", authMiddleware.authUser, musicController.recordPlay)
 
 // 4: api for user - can fetch allAlbums
-router.get("/albums", authMiddleware.authUser, musicController.getAllAlbums)
+router.get("/albums", musicController.getAllAlbums)
 
 // 5: api for user - can fetch a particular one album
 router.get("/albums/:albumId", authMiddleware.authUser, musicController.getAlbumById)

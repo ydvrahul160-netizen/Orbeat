@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+
 import {
   FaArrowRight,
   FaChartLine,
@@ -150,109 +151,203 @@ export default function Home() {
           )}
 
           {/* =====================================================
-              ORBEAT HERO
-          ====================================================== */}
-          <section className="relative mb-12 overflow-hidden rounded-[2rem] border border-white/[0.08] bg-gradient-to-br from-zinc-900 via-zinc-950 to-[#10101a] px-6 py-8 shadow-2xl sm:px-10 sm:py-10 lg:px-12 lg:py-12">
-            <div className="pointer-events-none absolute -right-20 -top-32 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-32 right-1/3 h-72 w-72 rounded-full bg-cyan-400/[0.08] blur-3xl" />
+    ORBEAT HERO
+====================================================== */}
+          {user ? (
+            <section className="relative mb-12 overflow-hidden rounded-[2rem] border border-white/[0.08] bg-gradient-to-br from-zinc-900 via-zinc-950 to-[#10101a] px-6 py-8 shadow-2xl sm:px-10 sm:py-10 lg:px-12 lg:py-12">
+              <div className="pointer-events-none absolute -right-20 -top-32 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl" />
+              <div className="pointer-events-none absolute -bottom-32 right-1/3 h-72 w-72 rounded-full bg-cyan-400/[0.08] blur-3xl" />
 
-            <div className="relative z-10 grid items-center gap-10 lg:grid-cols-[1fr_360px]">
-              <div>
-                <div className="mb-5 flex items-center gap-2 text-sm font-medium tracking-[0.18em] text-cyan-300 uppercase">
-                  <IoSparklesOutline className="text-lg" />
-                  Your listening space
-                </div>
-
-                <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-                  Good vibes,{" "}
-                  <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
-                    {user?.username || "listener"}.
-                  </span>
-                </h1>
-
-                <p className="mt-5 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
-                  Discover something new, revisit a favorite, and find creators
-                  worth following. Your next listen is already somewhere in your
-                  orbit.
-                </p>
-
-                <div className="mt-7 flex flex-wrap gap-3">
-                  <button
-                    onClick={() =>
-                      featuredTrack && handleTogglePlayback(featuredTrack)
-                    }
-                    disabled={!featuredTrack}
-                    className="group flex items-center gap-3 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black text-white">
-                      <FaPlay className="ml-0.5 text-[9px]" />
-                    </span>
-
-                    {featuredTrack
-                      ? isPlaying(featuredTrack)
-                        ? "Playing now"
-                        : "Play something"
-                      : "Explore music"}
-                  </button>
-
-                  <button
-                    onClick={() =>
-                      document
-                        .getElementById("discover")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
-                    className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.06]"
-                  >
-                    <FaRegCompass />
-                    Explore
-                  </button>
-                </div>
-              </div>
-
-              {/* Featured track */}
-              {featuredTrack && (
-                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500/30 to-cyan-400/20">
-                      {featuredTrack.coverImage || featuredTrack.imageUrl ? (
-                        <img
-                          src={
-                            featuredTrack.coverImage || featuredTrack.imageUrl
-                          }
-                          alt={featuredTrack.title}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <IoMusicalNotes className="text-3xl text-cyan-300" />
-                      )}
-                    </div>
-
-                    <div className="min-w-0">
-                      <p className="text-[11px] font-semibold tracking-widest text-zinc-500 uppercase">
-                        Picked for you
-                      </p>
-
-                      <h3 className="mt-1 truncate font-semibold text-white">
-                        {featuredTrack.title}
-                      </h3>
-
-                      <p className="mt-1 truncate text-sm text-zinc-500">
-                        {featuredTrack.artist?.username || "Unknown artist"}
-                      </p>
-                    </div>
+              <div className="relative z-10 grid items-center gap-10 lg:grid-cols-[1fr_360px]">
+                <div>
+                  <div className="mb-5 flex items-center gap-2 text-sm font-medium uppercase tracking-[0.18em] text-cyan-300">
+                    <IoSparklesOutline className="text-lg" />
+                    Your listening space
                   </div>
 
-                  <button
-                    onClick={() => handleTogglePlayback(featuredTrack)}
-                    className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white/[0.06] py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.1]"
-                  >
-                    <FaPlay className="text-[9px]" />
-                    {isPlaying(featuredTrack) ? "Playing" : "Listen now"}
-                  </button>
+                  <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+                    Good vibes,{" "}
+                    <span className="bg-gradient-to-r from-violet-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                      {user.username}.
+                    </span>
+                  </h1>
+
+                  <p className="mt-5 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
+                    Discover something new, revisit a favorite, and find
+                    creators worth following. Your next listen is already
+                    somewhere in your orbit.
+                  </p>
+
+                  <div className="mt-7 flex flex-wrap gap-3">
+                    <button
+                      onClick={() =>
+                        featuredTrack && handleTogglePlayback(featuredTrack)
+                      }
+                      disabled={!featuredTrack}
+                      className="group flex items-center gap-3 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black text-white">
+                        <FaPlay className="ml-0.5 text-[9px]" />
+                      </span>
+
+                      {featuredTrack
+                        ? isPlaying(featuredTrack)
+                          ? "Playing now"
+                          : "Play something"
+                        : "Explore music"}
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        document
+                          .getElementById("discover")
+                          ?.scrollIntoView({ behavior: "smooth" })
+                      }
+                      className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.06]"
+                    >
+                      <FaRegCompass />
+                      Explore
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
-          </section>
+
+                {featuredTrack && (
+                  <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500/30 to-cyan-400/20">
+                        {featuredTrack.coverImage || featuredTrack.imageUrl ? (
+                          <img
+                            src={
+                              featuredTrack.coverImage || featuredTrack.imageUrl
+                            }
+                            alt={featuredTrack.title}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <IoMusicalNotes className="text-3xl text-cyan-300" />
+                        )}
+                      </div>
+
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+                          Picked for you
+                        </p>
+
+                        <h3 className="mt-1 truncate font-semibold text-white">
+                          {featuredTrack.title}
+                        </h3>
+
+                        <p className="mt-1 truncate text-sm text-zinc-500">
+                          {featuredTrack.artist?.username || "Unknown artist"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleTogglePlayback(featuredTrack)}
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white/[0.06] py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.1]"
+                    >
+                      <FaPlay className="text-[9px]" />
+                      {isPlaying(featuredTrack) ? "Playing" : "Listen now"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </section>
+          ) : (
+            <section className="relative mb-12 overflow-hidden rounded-[2rem] border border-white/[0.08] bg-gradient-to-br from-zinc-900 via-zinc-950 to-[#10101a] px-6 py-10 shadow-2xl sm:px-10 sm:py-12 lg:px-12 lg:py-14">
+              <div className="pointer-events-none absolute -right-20 -top-32 h-80 w-80 rounded-full bg-green-500/[0.08] blur-3xl" />
+              <div className="pointer-events-none absolute -bottom-32 left-1/3 h-72 w-72 rounded-full bg-cyan-400/[0.06] blur-3xl" />
+
+              <div className="relative z-10 grid items-center gap-10 lg:grid-cols-[1fr_360px]">
+                <div>
+                  <div className="mb-5 flex items-center gap-2 text-sm font-medium uppercase tracking-[0.18em] text-green-400">
+                    <IoMusicalNotes className="text-lg" />
+                    Music discovery
+                  </div>
+
+                  <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+                    Find your next{" "}
+                    <span className="bg-gradient-to-r from-green-400 via-emerald-300 to-cyan-300 bg-clip-text text-transparent">
+                      favorite song.
+                    </span>
+                  </h1>
+
+                  <p className="mt-5 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
+                    Explore trending songs, discover new artists, and find
+                    albums worth adding to your rotation.
+                  </p>
+
+                  <div className="mt-7 flex flex-wrap gap-3">
+                    <button
+                      onClick={() =>
+                        document
+                          .getElementById("discover")
+                          ?.scrollIntoView({ behavior: "smooth" })
+                      }
+                      className="flex items-center gap-3 rounded-full bg-green-500 px-6 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5 hover:bg-green-400"
+                    >
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black text-white">
+                        <FaPlay className="ml-0.5 text-[9px]" />
+                      </span>
+                      Explore music
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/register")}
+                      className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-6 py-3.5 text-sm font-semibold text-zinc-200 transition hover:border-white/20 hover:bg-white/[0.06]"
+                    >
+                      Create account
+                    </button>
+                  </div>
+                </div>
+
+                {popularSongs[0] && (
+                  <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.035] p-4 backdrop-blur-xl">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-zinc-800">
+                        {popularSongs[0].coverImage ||
+                        popularSongs[0].imageUrl ? (
+                          <img
+                            src={
+                              popularSongs[0].coverImage ||
+                              popularSongs[0].imageUrl
+                            }
+                            alt={popularSongs[0].title}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <IoMusicalNotes className="text-3xl text-green-400" />
+                        )}
+                      </div>
+
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+                          Trending on Orbeat
+                        </p>
+
+                        <h3 className="mt-1 truncate font-semibold text-white">
+                          {popularSongs[0].title}
+                        </h3>
+
+                        <p className="mt-1 truncate text-sm text-zinc-500">
+                          {popularSongs[0].artist?.username || "Unknown artist"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleTogglePlayback(popularSongs[0])}
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white/[0.06] py-2.5 text-sm font-medium text-zinc-200 transition hover:bg-white/[0.1]"
+                    >
+                      <FaPlay className="text-[9px]" />
+                      Listen now
+                    </button>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
 
           {/* =====================================================
               SEARCH RESULTS

@@ -15,6 +15,7 @@ import { useApp } from "../contexts/AppContext";
 
 export default function DashboardLayout({ children }) {
   const navigate = useNavigate();
+
   const {
     user,
     currentTrack,
@@ -26,14 +27,18 @@ export default function DashboardLayout({ children }) {
     setIsPlaying,
     audioRef,
   } = useApp();
+
   const [playerState, setPlayerState] = useState("idle");
   const [playerError, setPlayerError] = useState("");
-    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   useEffect(() => {
     const audio = audioRef.current;
+
     if (!audio) return;
 
     setPlayerError("");
+
     if (!currentTrack?.uri) {
       audio.pause();
       audio.removeAttribute("src");
@@ -42,6 +47,7 @@ export default function DashboardLayout({ children }) {
     }
 
     audio.load();
+
     audio.play().catch((error) => {
       if (error.name !== "AbortError") {
         setPlayerState("paused");
@@ -56,100 +62,176 @@ export default function DashboardLayout({ children }) {
     setShowLogoutConfirm(true);
   };
 
-  // const handleLogoutClick = async () => {
-  //   await handleLogout();
-  //   navigate("/login");
-  // };
-
   const scrollToTop = () => {
     navigate("/");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-
-
   return (
     <div className="h-screen overflow-hidden bg-black text-white">
       {/* Main Grid */}
       <div className="grid h-[calc(100vh-112px)] grid-cols-1 gap-2 p-2 lg:grid-cols-[280px_1fr]">
-        {/* Sidebar */}
+        {/* =====================================================
+            SIDEBAR
+        ====================================================== */}
         <aside className="hidden rounded-lg bg-zinc-950 p-4 lg:flex lg:flex-col">
-          <h1 className="mb-6 text-2xl font-black text-green-500">Orbeat</h1>
+          {/* BRAND */}
+          <button
+            onClick={scrollToTop}
+            className="mb-7 w-fit text-left text-2xl font-black text-green-500"
+          >
+            Orbeat
+          </button>
 
+          {/* MAIN NAVIGATION */}
           <nav className="grid gap-2">
             <button
               className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
               onClick={scrollToTop}
             >
-              <FaHome /> Home Dashboard
+              <FaHome />
+              Home
             </button>
 
-            <button
-              className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
-              onClick={() => navigate("/profile")}
-            >
-              <FaUserCircle /> Profile
-            </button>
-
-            {user?.role === "artist" && (
+            {user ? (
               <>
                 <button
                   className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
-                  onClick={() => navigate("/upload")}
+                  onClick={() => navigate("/profile")}
                 >
-                  <FaUpload /> Upload Song
+                  <FaUserCircle />
+                  Profile
                 </button>
-                <button
-                  className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
-                  onClick={() => navigate("/create-album")}
-                >
-                  <FaPlus /> Create Album
-                </button>
-              </>
-            )}
 
-            {user?.role !== "artist" && (
-              <button
-                className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-green-300 transition hover:bg-green-500/10"
-                onClick={() => navigate("/artist-register")}
-              >
-                <FaPlus /> Register Artist
-              </button>
-            )}
+                {user.role === "artist" && (
+                  <>
+                    <button
+                      className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
+                      onClick={() => navigate("/upload")}
+                    >
+                      <FaUpload />
+                      Upload Song
+                    </button>
+
+                    <button
+                      className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-100 transition hover:bg-zinc-900"
+                      onClick={() => navigate("/create-album")}
+                    >
+                      <FaPlus />
+                      Create Album
+                    </button>
+                  </>
+                )}
+
+                {user.role !== "artist" && (
+                  <button
+                    className="flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-green-300 transition hover:bg-green-500/10"
+                    onClick={() => navigate("/artist-register")}
+                  >
+                    <FaPlus />
+                    Register Artist
+                  </button>
+                )}
+              </>
+            ) : null}
           </nav>
 
+          {/* =====================================================
+              LIBRARY
+          ====================================================== */}
           <div className="mt-6 min-h-0 flex-1 rounded-lg bg-zinc-900 p-4">
-            <h2 className="mb-4 flex items-center gap-2 font-bold text-zinc-200">
-              <FaLayerGroup /> Your Library
-            </h2>
-            <div className="grid gap-3">
-              <div className="rounded-md bg-zinc-800/80 p-4">
-                <p className="font-semibold">Your Songs</p>
-                <p className="mt-1 text-sm text-zinc-400">
-                  Swipe shelves to explore
-                </p>
-              </div>
-              <div className="rounded-md bg-zinc-800/80 p-4">
-                <p className="font-semibold">Your Albums</p>
-                <p className="mt-1 text-sm text-zinc-400">Made by artists</p>
-              </div>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 font-bold text-zinc-200">
+                <FaLayerGroup />
+                Your Library
+              </h2>
+
+              {!user && (
+                <button
+                  onClick={() => navigate("/login")}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-zinc-300 transition hover:bg-zinc-700 hover:text-white"
+                  aria-label="Create playlist"
+                >
+                  <FaPlus className="text-xs" />
+                </button>
+              )}
             </div>
+
+            {user ? (
+              <div className="grid gap-3">
+                <div className="rounded-md bg-zinc-800/80 p-4">
+                  <p className="font-semibold">Your Songs</p>
+                  <p className="mt-1 text-sm text-zinc-400">
+                    Swipe shelves to explore
+                  </p>
+                </div>
+
+                <div className="rounded-md bg-zinc-800/80 p-4">
+                  <p className="font-semibold">Your Albums</p>
+                  <p className="mt-1 text-sm text-zinc-400">
+                    Made by artists
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                <div className="rounded-md bg-zinc-800/80 p-4">
+                  <p className="font-semibold">Create your first playlist</p>
+
+                  <p className="mt-2 text-sm leading-5 text-zinc-400">
+                    It's easy, we'll help you
+                  </p>
+
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="mt-4 rounded-full bg-white px-4 py-2 text-sm font-bold text-black transition hover:bg-zinc-200"
+                  >
+                    Create playlist
+                  </button>
+                </div>
+
+                <div className="rounded-md bg-zinc-800/80 p-4">
+                  <p className="font-semibold">
+                    Discover new music
+                  </p>
+
+                  <p className="mt-2 text-sm leading-5 text-zinc-400">
+                    Explore songs, artists and albums on Orbeat.
+                  </p>
+
+                  <button
+                    onClick={scrollToTop}
+                    className="mt-4 rounded-full bg-white px-4 py-2 text-sm font-bold text-black transition hover:bg-zinc-200"
+                  >
+                    Browse music
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
-          <button
-            onClick={handleLogoutClick}
-            className="mt-4 flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-400 transition hover:bg-red-500/10 hover:text-red-300"
-          >
-            <FaSignOutAlt /> Logout
-          </button>
+          {/* LOGOUT - ONLY LOGGED IN */}
+          {user && (
+            <button
+              onClick={handleLogoutClick}
+              className="mt-4 flex items-center gap-3 rounded-md px-3 py-3 text-left font-semibold text-zinc-400 transition hover:bg-red-500/10 hover:text-red-300"
+            >
+              <FaSignOutAlt />
+              Logout
+            </button>
+          )}
         </aside>
 
-        {/* Main Content */}
+        {/* =====================================================
+            MAIN CONTENT
+        ====================================================== */}
         <main className="overflow-y-auto rounded-lg bg-gradient-to-b from-zinc-800 via-zinc-950 to-black">
-          {/* Header */}
+          {/* =====================================================
+              HEADER
+          ====================================================== */}
           <header className="sticky top-0 z-20 bg-zinc-950/90 p-3 backdrop-blur md:p-4">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              {/* Mobile Navigation */}
+              {/* MOBILE NAVIGATION */}
               <div className="flex gap-2 overflow-x-auto pb-1 lg:hidden">
                 <button
                   className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
@@ -157,71 +239,123 @@ export default function DashboardLayout({ children }) {
                 >
                   Home
                 </button>
-                <button
-                  className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
-                  onClick={() => navigate("/profile")}
-                >
-                  Profile
-                </button>
-                {user?.role === "artist" && (
-                  <button
-                    className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
-                    onClick={() => navigate("/upload")}
-                  >
-                    Upload
-                  </button>
-                )}
-                {user?.role !== "artist" && (
-                  <button
-                    className="shrink-0 rounded-full bg-green-500 px-4 py-2 text-sm font-bold text-black"
-                    onClick={() => navigate("/artist-register")}
-                  >
-                    Artist
-                  </button>
+
+                {user ? (
+                  <>
+                    <button
+                      className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
+                      onClick={() => navigate("/profile")}
+                    >
+                      Profile
+                    </button>
+
+                    {user.role === "artist" && (
+                      <button
+                        className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
+                        onClick={() => navigate("/upload")}
+                      >
+                        Upload
+                      </button>
+                    )}
+
+                    {user.role !== "artist" && (
+                      <button
+                        className="shrink-0 rounded-full bg-green-500 px-4 py-2 text-sm font-bold text-black"
+                        onClick={() => navigate("/artist-register")}
+                      >
+                        Artist
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="shrink-0 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold"
+                      onClick={() => navigate("/login")}
+                    >
+                      Login
+                    </button>
+
+                    <button
+                      className="shrink-0 rounded-full bg-white px-4 py-2 text-sm font-bold text-black"
+                      onClick={() => navigate("/register")}
+                    >
+                      Create account
+                    </button>
+                  </>
                 )}
               </div>
 
-              {/* Search Bar */}
-              <label className="relative m-0 block w-full md:max-w-md">
+              {/* SEARCH BAR */}
+              <label className="relative m-0 block w-full md:max-w-xl">
                 <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && query.trim()) {
-                      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+                      navigate(
+                        `/search?q=${encodeURIComponent(query.trim())}`,
+                      );
                     }
                   }}
-                  className="w-full rounded-full border border-transparent bg-zinc-900 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-white"
+                  className="w-full rounded-full border border-transparent bg-zinc-900 py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-white/20"
                   placeholder="Search songs, artists or albums..."
                 />
               </label>
 
-              {/* User Info */}
-              <div className="flex items-center gap-3">
-                <button
-                  className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold capitalize"
-                  onClick={() => navigate("/profile")}
-                >
-                  {user?.username}
-                </button>
-                <button
-                  onClick={handleLogoutClick}
-                  className="rounded-full bg-zinc-900 p-3 text-zinc-300 transition hover:bg-zinc-800 hover:text-white lg:hidden"
-                  aria-label="Logout"
-                >
-                  <FaSignOutAlt />
-                </button>
+              {/* RIGHT SIDE */}
+              <div className="hidden items-center gap-2 md:flex">
+                {!user ? (
+                  <>
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="rounded-full px-4 py-2 text-sm font-bold text-zinc-300 transition hover:text-white"
+                    >
+                      Login
+                    </button>
+
+                    <button
+                      onClick={() => navigate("/register")}
+                      className="rounded-full bg-white px-5 py-2.5 text-sm font-bold text-black transition hover:bg-zinc-200"
+                    >
+                      Create account
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-2 text-sm font-bold capitalize transition hover:bg-zinc-800"
+                      onClick={() => navigate("/profile")}
+                    >
+                      <FaUserCircle />
+                      {user.username}
+                    </button>
+
+                    <button
+                      onClick={handleLogoutClick}
+                      className="rounded-full bg-zinc-900 p-3 text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
+                      aria-label="Logout"
+                    >
+                      <FaSignOutAlt />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </header>
 
-          {/* Page Content */}
-          <div className="p-4 pb-8 sm:p-6 lg:p-8">{children}</div>
+          {/* PAGE CONTENT */}
+          <div className="p-4 pb-8 sm:p-6 lg:p-8">
+            {children}
+          </div>
         </main>
       </div>
 
-      {/* Player Footer */}
+      {/* =====================================================
+          PLAYER FOOTER
+      ====================================================== */}
       <footer className="grid h-28 grid-cols-[1fr_auto] items-center gap-4 border-t border-zinc-800 bg-zinc-950 px-4 md:grid-cols-[1fr_520px_1fr]">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-green-500 to-zinc-800">
@@ -231,10 +365,12 @@ export default function DashboardLayout({ children }) {
               <FaCompactDisc className="text-green-300" />
             )}
           </div>
+
           <div className="min-w-0">
             <p className="truncate font-semibold">
               {currentTrack?.title || "Choose a song"}
             </p>
+
             <p className="truncate text-sm text-zinc-400">
               {currentTrack?.artist?.username || "Nothing playing yet"}
             </p>
@@ -278,7 +414,11 @@ export default function DashboardLayout({ children }) {
               setPlayerError("Unable to play this audio file.");
             }}
           />
-          <p className="mt-1 min-h-4 text-xs text-red-300" aria-live="polite">
+
+          <p
+            className="mt-1 min-h-4 text-xs text-red-300"
+            aria-live="polite"
+          >
             {playerError ||
               (playerState === "loading" ? "Loading audio..." : "")}
           </p>
@@ -289,7 +429,10 @@ export default function DashboardLayout({ children }) {
           <span>{currentTrack?.comments?.length || 0} comments</span>
         </div>
       </footer>
-            {/* Logout Confirmation Modal */}
+
+      {/* =====================================================
+          LOGOUT CONFIRMATION
+      ====================================================== */}
       {showLogoutConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
           <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-950 p-6 shadow-2xl">

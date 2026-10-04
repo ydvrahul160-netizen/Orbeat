@@ -2,22 +2,15 @@ import { FaSearch, FaBell } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { IoSparklesOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { useApp } from "../../contexts/AppContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-
-  const goToLogin = (destination) => {
-    navigate("/login", {
-      state: {
-        from: destination,
-      },
-    });
-  };
+  const { user } = useApp();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/[0.07] bg-[#09090b]/90 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-3 px-3 sm:h-[68px] sm:gap-5 sm:px-5 lg:px-8 xl:px-10">
-
         {/* ================= BRAND ================= */}
         <button
           onClick={() => navigate("/")}
@@ -43,24 +36,26 @@ export default function Navbar() {
 
         {/* ================= DESKTOP SEARCH ================= */}
         <button
-          onClick={() => goToLogin("/search")}
-          className="group relative mx-auto hidden w-full max-w-[520px] lg:block"
+          onClick={() => navigate("/search")}
+          className="group mx-2 hidden min-w-0 flex-1 lg:block"
           aria-label="Search Orbeat"
         >
-          <FaSearch className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-xs text-zinc-600 transition duration-300 group-hover:text-violet-300" />
+          <div className="relative">
+            <FaSearch className="absolute left-4 top-1/2 z-10 -translate-y-1/2 text-xs text-zinc-600 transition duration-300 group-hover:text-violet-300" />
 
-          <div className="flex h-10 w-full items-center rounded-full border border-white/[0.07] bg-white/[0.035] pl-11 pr-20 text-left text-sm text-zinc-600 shadow-inner transition duration-300 group-hover:border-violet-400/20 group-hover:bg-white/[0.055] group-hover:text-zinc-400">
-            Search songs, artists and albums
+            <div className="flex h-10 w-full items-center rounded-full border border-white/[0.07] bg-white/[0.035] pl-11 pr-20 text-left text-sm text-zinc-600 shadow-inner transition duration-300 group-hover:border-violet-400/20 group-hover:bg-white/[0.055] group-hover:text-zinc-400">
+              Search songs, artists and albums
+            </div>
+
+            <span className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-white/[0.07] bg-white/[0.04] px-2 py-1 text-[9px] font-medium tracking-wider text-zinc-600 xl:block">
+              SEARCH
+            </span>
           </div>
-
-          <span className="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-md border border-white/[0.07] bg-white/[0.04] px-2 py-1 text-[9px] font-medium tracking-wider text-zinc-600 xl:block">
-            SEARCH
-          </span>
         </button>
 
         {/* ================= TABLET SEARCH ================= */}
         <button
-          onClick={() => goToLogin("/search")}
+          onClick={() => navigate("/search")}
           className="ml-auto hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.035] text-zinc-500 transition duration-300 hover:border-violet-400/25 hover:bg-violet-500/10 hover:text-violet-300 md:flex lg:hidden"
           aria-label="Search"
         >
@@ -69,54 +64,74 @@ export default function Navbar() {
 
         {/* ================= RIGHT ACTIONS ================= */}
         <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2.5 lg:ml-0">
-
-          {/* Mobile / Tablet Search */}
+          {/* Mobile Search Icon */}
           <button
-            onClick={() => goToLogin("/search")}
+            onClick={() => navigate("/search")}
             className="flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition duration-300 hover:bg-white/[0.05] hover:text-violet-300 active:scale-95 md:hidden"
             aria-label="Search"
           >
             <FaSearch className="text-sm" />
           </button>
 
-          {/* Notifications */}
-          <button
-            onClick={() => goToLogin("/notifications")}
-            className="relative flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition duration-300 hover:bg-white/[0.05] hover:text-cyan-300 active:scale-95 sm:h-10 sm:w-10"
-            aria-label="Notifications"
-          >
-            <FaBell className="text-sm sm:text-[15px]" />
+          {/* ================= GUEST ACTIONS ================= */}
+          {!user && (
+            <>
+              <button
+                onClick={() => navigate("/login")}
+                className="hidden rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-sm font-medium text-zinc-300 transition hover:border-violet-400/25 hover:bg-violet-500/10 hover:text-white sm:block"
+              >
+                Login
+              </button>
 
-            {/* Notification indicator */}
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400 opacity-70" />
-          </button>
+              <button
+                onClick={() => navigate("/register")}
+                className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-black transition hover:bg-zinc-200"
+              >
+                <span className="sm:hidden">Sign up</span>
+                <span className="hidden sm:inline">Create account</span>
+              </button>
+            </>
+          )}
 
-          {/* Divider */}
-          <span className="mx-1 hidden h-6 w-px bg-white/[0.07] sm:block" />
+          {/* ================= LOGGED-IN ACTIONS ================= */}
+          {user && (
+            <>
+              {/* Notifications */}
+              <button
+                onClick={() => navigate("/notifications")}
+                className="relative flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition duration-300 hover:bg-white/[0.05] hover:text-cyan-300 active:scale-95 sm:h-10 sm:w-10"
+                aria-label="Notifications"
+              >
+                <FaBell className="text-sm sm:text-[15px]" />
 
-          {/* Profile */}
-          <button
-            onClick={() => goToLogin("/profile")}
-            className="group flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.035] text-xl text-zinc-400 transition duration-300 hover:-translate-y-0.5 hover:border-violet-400/30 hover:bg-violet-500/10 hover:text-violet-200 active:scale-95 sm:h-10 sm:w-10"
-            aria-label="Profile"
-          >
-            <CgProfile className="transition duration-300 group-hover:scale-105" />
-          </button>
+                <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-cyan-400 opacity-70" />
+              </button>
+
+              <span className="mx-1 hidden h-6 w-px bg-white/[0.07] sm:block" />
+
+              {/* Profile */}
+              <button
+                onClick={() => navigate("/profile")}
+                className="group flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.07] bg-white/[0.035] text-xl text-zinc-400 transition duration-300 hover:-translate-y-0.5 hover:border-violet-400/30 hover:bg-violet-500/10 hover:text-violet-200 active:scale-95 sm:h-10 sm:w-10"
+                aria-label="Profile"
+              >
+                <CgProfile className="transition duration-300 group-hover:scale-105" />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
       {/* ================= MOBILE SEARCH BAR ================= */}
       <div className="border-t border-white/[0.04] px-3 pb-3 pt-2 md:hidden">
         <button
-          onClick={() => goToLogin("/search")}
+          onClick={() => navigate("/search")}
           className="group flex h-10 w-full items-center gap-3 rounded-xl border border-white/[0.07] bg-white/[0.035] px-4 text-left text-sm text-zinc-600 transition duration-300 hover:border-violet-400/20 hover:bg-white/[0.05]"
           aria-label="Search Orbeat"
         >
           <FaSearch className="shrink-0 text-xs text-zinc-600 transition group-hover:text-violet-300" />
 
-          <span className="truncate">
-            Search songs, artists and albums
-          </span>
+          <span className="truncate">Search songs, artists and albums</span>
 
           <IoSparklesOutline className="ml-auto shrink-0 text-sm text-violet-400/50" />
         </button>

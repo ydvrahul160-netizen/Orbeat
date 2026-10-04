@@ -25,9 +25,7 @@ async function createMusic(req, res) {
     }
 
     // Upload audio
-    const musicResult = await uploadFile(
-      musicFile.buffer.toString("base64")
-    );
+    const musicResult = await uploadFile(musicFile.buffer.toString("base64"));
 
     if (!musicResult?.url) {
       return res.status(502).json({
@@ -45,9 +43,7 @@ async function createMusic(req, res) {
         });
       }
 
-      const coverResult = await uploadFile(
-        coverFile.buffer.toString("base64")
-      );
+      const coverResult = await uploadFile(coverFile.buffer.toString("base64"));
 
       if (!coverResult?.url) {
         return res.status(502).json({
@@ -96,11 +92,13 @@ async function updateMusic(req, res) {
     return res.status(400).json({ message: "Title is required." });
   }
 
-  const music = await musicModel.findOneAndUpdate(
-    { _id: req.params.musicId, artist: req.user.id },
-    { title: title.trim() },
-    { new: true, runValidators: true },
-  ).populate("artist", "username email profileImage");
+  const music = await musicModel
+    .findOneAndUpdate(
+      { _id: req.params.musicId, artist: req.user.id },
+      { title: title.trim() },
+      { new: true, runValidators: true },
+    )
+    .populate("artist", "username email profileImage");
 
   if (!music) {
     return res.status(404).json({ message: "Song not found for this artist." });
@@ -136,13 +134,17 @@ async function createAlbum(req, res) {
   }
 
   if (!musicId) {
-    return res.status(400).json({ message: "Please select a song for this album." });
+    return res
+      .status(400)
+      .json({ message: "Please select a song for this album." });
   }
 
   const music = await musicModel.findOne({ _id: musicId, artist: req.user.id });
 
   if (!music) {
-    return res.status(404).json({ message: "Selected song was not found for this artist." });
+    return res
+      .status(404)
+      .json({ message: "Selected song was not found for this artist." });
   }
 
   const album = await albumModel.create({
@@ -188,11 +190,12 @@ async function updateAlbum(req, res) {
     return res.status(400).json({ message: "Album title is required." });
   }
 
-  const album = await albumModel.findOneAndUpdate(
-    { _id: req.params.albumId, artist: req.user.id },
-    { title: title.trim() },
-    { new: true, runValidators: true },
-  )
+  const album = await albumModel
+    .findOneAndUpdate(
+      { _id: req.params.albumId, artist: req.user.id },
+      { title: title.trim() },
+      { new: true, runValidators: true },
+    )
     .populate("artist", "username email profileImage")
     .populate({
       path: "musics",
@@ -200,7 +203,9 @@ async function updateAlbum(req, res) {
     });
 
   if (!album) {
-    return res.status(404).json({ message: "Album not found for this artist." });
+    return res
+      .status(404)
+      .json({ message: "Album not found for this artist." });
   }
 
   return res.status(200).json({ message: "Album updated successfully", album });
@@ -213,12 +218,13 @@ async function deleteAlbum(req, res) {
   });
 
   if (!album) {
-    return res.status(404).json({ message: "Album not found for this artist." });
+    return res
+      .status(404)
+      .json({ message: "Album not found for this artist." });
   }
 
   return res.status(200).json({ message: "Album deleted successfully" });
 }
-
 
 async function populateHomeMusic(items) {
   return musicModel.populate(items, [
@@ -256,11 +262,7 @@ async function getHomeSections(req) {
     .limit(30)
     .lean();
 
-  const freshQuery = musicModel
-    .find()
-    .sort({ createdAt: -1 })
-    .limit(20)
-    .lean();
+  const freshQuery = musicModel.find().sort({ createdAt: -1 }).limit(20).lean();
 
   const hiddenGemsQuery = musicModel
     .find({ playCount: { $lte: 25 } })
@@ -268,17 +270,41 @@ async function getHomeSections(req) {
     .limit(20)
     .lean();
 
-  const likedArtists = await musicModel.find({ likes: req.user._id }).distinct("artist");
+  const likedArtists = req.user
+    ? await musicModel.find({ likes: req.user._id }).distinct("artist")
+    : [];
+
   const recommendationQuery = likedArtists.length
-    ? musicModel.find({ artist: { $in: likedArtists } }).sort({ createdAt: -1 }).limit(10).lean()
+    ? musicModel
+        .find({ artist: { $in: likedArtists } })
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .lean()
     : musicModel.find().sort({ playCount: -1, createdAt: -1 }).limit(10).lean();
 
-  const historyQuery = historyModel.find({ user: req.user._id })
-    .sort({ playedAt: -1 })
-    .limit(20)
-    .populate({ path: "music", populate: { path: "artist", select: "username email profileImage" } });
+  const historyQuery = req.user
+    ? historyModel
+        .find({ user: req.user._id })
+        .sort({ playedAt: -1 })
+        .limit(20)
+        .populate({
+          path: "music",
+          populate: {
+            path: "artist",
+            select: "username email profileImage",
+          },
+        })
+    : Promise.resolve([]);
 
-  const [popularRadio, charts, editorCandidates, freshCandidates, hiddenCandidates, recommendations, history] = await Promise.all([
+  const [
+    popularRadio,
+    charts,
+    editorCandidates,
+    freshCandidates,
+    hiddenCandidates,
+    recommendations,
+    history,
+  ] = await Promise.all([
     popularRadioQuery,
     chartQuery,
     editorQuery,
@@ -299,35 +325,47 @@ async function getHomeSections(req) {
     if (diverseEditors.length === 8) break;
   }
 
-    const diverseFreshDrops = [];
-    const freshArtists = new Set();
-    for (const item of freshCandidates) {
-      const artistId = String(item.artist);
-      if (!freshArtists.has(artistId) || diverseFreshDrops.length >= 8) {
-        diverseFreshDrops.push(item);
-        freshArtists.add(artistId);
-      }
-      if (diverseFreshDrops.length === 8) break;
+  const diverseFreshDrops = [];
+  const freshArtists = new Set();
+  for (const item of freshCandidates) {
+    const artistId = String(item.artist);
+    if (!freshArtists.has(artistId) || diverseFreshDrops.length >= 8) {
+      diverseFreshDrops.push(item);
+      freshArtists.add(artistId);
     }
+    if (diverseFreshDrops.length === 8) break;
+  }
 
-    const hiddenGems = hiddenCandidates
-      .filter((item) => (item.likes?.length || 0) + (item.comments?.length || 0) > 0)
-      .slice(0, 8);
+  const hiddenGems = hiddenCandidates
+    .filter(
+      (item) => (item.likes?.length || 0) + (item.comments?.length || 0) > 0,
+    )
+    .slice(0, 8);
 
-    const spotlightArtistIds = [...new Set(editorCandidates.map((item) => String(item.artist)))].slice(0, 8);
-    const spotlightArtists = await userModel.find({ _id: { $in: spotlightArtistIds } })
-      .select("username profileImage role")
-      .lean();
-    const spotlightTracks = editorCandidates.reduce((groups, track) => {
-      const artistId = String(track.artist);
-      if (spotlightArtistIds.includes(artistId)) {
-        groups[artistId] = groups[artistId] || [];
-        if (groups[artistId].length < 2) groups[artistId].push(track);
-      }
-      return groups;
-    }, {});
+  const spotlightArtistIds = [
+    ...new Set(editorCandidates.map((item) => String(item.artist))),
+  ].slice(0, 8);
+  const spotlightArtists = await userModel
+    .find({ _id: { $in: spotlightArtistIds } })
+    .select("username profileImage role")
+    .lean();
+  const spotlightTracks = editorCandidates.reduce((groups, track) => {
+    const artistId = String(track.artist);
+    if (spotlightArtistIds.includes(artistId)) {
+      groups[artistId] = groups[artistId] || [];
+      if (groups[artistId].length < 2) groups[artistId].push(track);
+    }
+    return groups;
+  }, {});
 
-  const [populatedRadio, populatedCharts, populatedEditors, populatedRecommendations, populatedFresh, populatedGems] = await Promise.all([
+  const [
+    populatedRadio,
+    populatedCharts,
+    populatedEditors,
+    populatedRecommendations,
+    populatedFresh,
+    populatedGems,
+  ] = await Promise.all([
     populateHomeMusic(popularRadio),
     populateHomeMusic(charts),
     populateHomeMusic(diverseEditors),
@@ -357,26 +395,25 @@ async function getHomeSections(req) {
 }
 
 // api design for fetching all music
-async function getAllMusics(req, res){
+async function getAllMusics(req, res) {
+  const [musics, sections] = await Promise.all([
+    musicModel
+      .find()
+      .skip(0)
+      .limit(1000)
+      .populate("artist", "username email profileImage")
+      .populate("comments.user", "username email profileImage"),
+    getHomeSections(req),
+  ]);
 
-    const [musics, sections] = await Promise.all([
-      musicModel
-        .find()
-        .skip(0)
-        .limit(1000)
-        .populate("artist", "username email profileImage")
-        .populate("comments.user", "username email profileImage"),
-      getHomeSections(req),
-    ])
-    
-    res.status(200).json({
-        message:"Musics fetched successfully",
-        musics: musics,        
-        sections,
-    })
+  res.status(200).json({
+    message: "Musics fetched successfully",
+    musics: musics,
+    sections,
+  });
 }
 
-async function toggleLike(req, res){
+async function toggleLike(req, res) {
   const musicId = req.params.musicId;
   const music = await musicModel.findById(musicId);
 
@@ -405,7 +442,7 @@ async function toggleLike(req, res){
   });
 }
 
-async function addComment(req, res){
+async function addComment(req, res) {
   const musicId = req.params.musicId;
   const { text } = req.body;
 
@@ -436,7 +473,7 @@ async function addComment(req, res){
   });
 }
 
-async function recordPlay(req, res){
+async function recordPlay(req, res) {
   const musicId = req.params.musicId;
   const music = await musicModel
     .findByIdAndUpdate(musicId, { $inc: { playCount: 1 } }, { new: true })
@@ -453,25 +490,24 @@ async function recordPlay(req, res){
   });
 }
 
-
 //  api design for fetching allAlbums
-async function getAllAlbums(req, res){
+async function getAllAlbums(req, res) {
   const albums = await albumModel
     .find()
     .populate("artist", "username email profileImage")
     .populate({
       path: "musics",
       populate: { path: "artist", select: "username email profileImage" },
-    })
+    });
 
   res.status(200).json({
     message: "Albums fetched successfully",
     albums: albums,
-  })
+  });
 }
 
 //
-async function getAlbumById(req, res){
+async function getAlbumById(req, res) {
   const albumId = req.params.albumId;
 
   const album = await albumModel
@@ -480,7 +516,7 @@ async function getAlbumById(req, res){
     .populate({
       path: "musics",
       populate: { path: "artist", select: "username email profileImage" },
-    })
+    });
 
   if (!album) {
     return res.status(404).json({ message: "Album not found" });
@@ -489,7 +525,7 @@ async function getAlbumById(req, res){
   return res.status(200).json({
     message: "album fetched successfully",
     album: album,
-  })
+  });
 }
 
 module.exports = {

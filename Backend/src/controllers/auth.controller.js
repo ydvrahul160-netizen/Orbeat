@@ -16,7 +16,7 @@ function buildUserResponse(user) {
         bio: user.bio || "",
     }
 }
-
+// update-profile-image
 async function updateProfileImage(req, res){
     if(!req.file?.buffer){
         return res.status(400).json({message: "Profile image is required"})
@@ -76,7 +76,7 @@ async function updateProfile(req, res){
 function setAuthCookie(res, token) {
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         secure: process.env.NODE_ENV === "production",
         path: "/",
     })
@@ -168,14 +168,17 @@ async function loginUser(req, res){
 
 
 // logout api controller
-async function logoutUser(req, res){
+async function logoutUser(req, res) {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         secure: process.env.NODE_ENV === "production",
         path: "/",
     })
-    res.status(200).json({message: "User logged out successfully"})
+
+    res.status(200).json({
+        message: "User logged out successfully"
+    })
 }
 
 async function getCurrentUser(req, res){

@@ -100,24 +100,42 @@ export function AppProvider({ children }) {
   }, []);
 
   // Check auth on mount
+  // Check authentication and load public content
   useEffect(() => {
     let active = true;
 
-    getCurrentUser()
-      .then(async (response) => {
+    async function initializeApp() {
+      let currentUser = null;
+
+      try {
+        const response = await getCurrentUser();
+        currentUser = response.user;
+
         if (!active) return;
-        setUser(response.user);
-        await loadContent();
-        if (response.user.role === "artist") {
-          await loadArtistContent(response.user);
+
+        setUser(currentUser);
+      } catch {
+        // No active session. The app can still be used as a guest.
+        if (active) {
+          setUser(null);
         }
-      })
-      .catch(() => {
-        if (active) setUser(null);
-      })
-      .finally(() => {
-        if (active) setAuthChecking(false);
-      });
+      }
+
+      if (!active) return;
+
+      // Music and albums are public, so load them for guests too.
+      await loadContent();
+
+      if (currentUser?.role === "artist") {
+        await loadArtistContent(currentUser);
+      }
+
+      if (active) {
+        setAuthChecking(false);
+      }
+    }
+
+    initializeApp();
 
     return () => {
       active = false;
@@ -269,8 +287,8 @@ export function AppProvider({ children }) {
     }
 
     setUser(null);
-    setMusics([]);
-    setAlbums([]);
+    // setMusics([]);
+    // setAlbums([]);
     setHomeSections({
       popularRadio: [],
       featuredCharts: [],
